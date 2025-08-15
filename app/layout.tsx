@@ -1,29 +1,36 @@
 import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Inter } from 'next/font/google';
 import './globals.css';
 
+import { InteractiveBackground } from '@/components/interactive-background';
+import { Navigation } from '@/components/navigation';
+import Footer from '@/components/footer';
+import { getPersonalData } from '@/lib/wp-utils';
+
+const inter = Inter({ subsets: ['latin'] });
+
 export const metadata: Metadata = {
-  title: 'Personal site',
+  title: 'John Doe Portfolio',
+  description: 'Digital craftsman pushing the boundaries of web experiences',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const personal = await getPersonalData();
+
   return (
     <html lang='en'>
-      <head>
-        <style>{`
-html {
-  font-family: ${GeistSans.style.fontFamily};
-  --font-sans: ${GeistSans.variable};
-  --font-mono: ${GeistMono.variable};
-}
-        `}</style>
-      </head>
-      <body>{children}</body>
+      <body className={inter.className}>
+        <div className='relative bg-black min-h-screen overflow-hidden text-white'>
+          <InteractiveBackground />
+          <Navigation logo={personal.logo.url} name={personal.name} />
+          <div className='z-10 relative'>{children}</div>
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }
