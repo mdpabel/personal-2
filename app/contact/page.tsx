@@ -2,13 +2,11 @@ export const dynamic = 'force-static';
 
 import { Metadata } from 'next';
 import { getPersonalData } from '@/lib/wp-utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Send, Mail, Globe, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { generateBasicSEOMetadata } from '@/components/seo';
+import ContactForm from './contact-form';
 
 export async function generateMetadata(): Promise<Metadata> {
   const personal = await getPersonalData();
@@ -86,49 +84,11 @@ export default async function ContactPage() {
                 <MapPin className='w-5 h-5 text-cyan-400' />
                 <span>{location}</span>
               </div>
-              <div className='flex items-center space-x-3'>
-                <Globe className='w-5 h-5 text-cyan-400' />
-                <div className='flex space-x-4'>
-                  {socialList.map((social, i) => (
-                    <Link
-                      key={i}
-                      href={`https://${social}.com/yourusername`} // Adjust to actual URLs if stored
-                      className='text-white/70 hover:text-cyan-300 capitalize'>
-                      {social}
-                    </Link>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Contact Form Section */}
-          <div className='bg-white/5 backdrop-blur-xl p-8 border border-white/10 rounded-3xl'>
-            <form className='space-y-6'>
-              <Input
-                placeholder='Your Name'
-                className='bg-white/10 border-white/20 text-white placeholder:text-white/50'
-              />
-              <Input
-                type='email'
-                placeholder='Your Email'
-                className='bg-white/10 border-white/20 text-white placeholder:text-white/50'
-              />
-              <Input
-                placeholder='Subject'
-                className='bg-white/10 border-white/20 text-white placeholder:text-white/50'
-              />
-              <Textarea
-                placeholder='Your Message'
-                className='bg-white/10 border-white/20 min-h-[150px] text-white placeholder:text-white/50'
-              />
-              <Button
-                type='submit'
-                className='bg-gradient-to-r from-purple-600 hover:from-purple-700 to-cyan-600 hover:to-cyan-700 w-full'>
-                <Send className='mr-2 w-4 h-4' /> Send Message
-              </Button>
-            </form>
-          </div>
+          <ContactForm />
         </div>
       </main>
     </div>
