@@ -11,6 +11,20 @@ import {
   getProjects,
   getBlogPosts,
 } from '@/lib/wp-utils';
+import { generateBasicSEOMetadata } from '@/components/seo';
+import type { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const personal = await getPersonalData();
+
+  return generateBasicSEOMetadata({
+    title: `${personal.acf.name} Portfolio`,
+    description: personal.acf.title__headline,
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/',
+    type: 'website',
+  });
+}
 
 export default async function HomePage() {
   const personal = await getPersonalData();
@@ -18,7 +32,7 @@ export default async function HomePage() {
   const { total: totalProjects } = await getProjects({ limit: 3 });
   const { posts: blogPosts } = await getBlogPosts({ limit: 3, page: 1 });
 
-  const nameParts = personal.name.toUpperCase().split(' ');
+  const nameParts = personal.acf.name.toUpperCase().split(' ');
   const firstName = nameParts[0] || 'JOHN';
   const lastName = nameParts.slice(1).join(' ') || 'DOE';
 
@@ -29,14 +43,14 @@ export default async function HomePage() {
       : currentYear;
   const yearsExperience = currentYear - minYear;
 
-  const socialList = personal.social_media_comma_seperated
-    ? personal.social_media_comma_seperated
+  const socialList = personal.acf.social_media_comma_seperated
+    ? personal.acf.social_media_comma_seperated
         .split(',')
         .map((s) => s.trim().toLowerCase())
     : [];
 
   const profileImage =
-    personal.images?.[0]?.full_image_url ||
+    personal.acf.images?.[0]?.full_image_url ||
     '/placeholder.svg?height=180&width=180';
 
   const formatDate = (dateStr: string) => {
@@ -73,7 +87,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection
-        personal={personal}
+        personal={personal.acf}
         firstName={firstName}
         lastName={lastName}
         totalProjects={totalProjects}

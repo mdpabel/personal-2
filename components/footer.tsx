@@ -61,8 +61,8 @@ export default async function Footer() {
     return null;
   };
 
-  const socialList = personal.social_media_comma_seperated
-    ? personal.social_media_comma_seperated.split(',').map((s) => s.trim())
+  const socialList = personal.acf.social_media_comma_seperated
+    ? personal.acf.social_media_comma_seperated.split(',').map((s) => s.trim())
     : [];
 
   const quickLinks = [
@@ -84,17 +84,19 @@ export default async function Footer() {
           <div className='flex flex-col space-y-4'>
             <Link href='/' className='flex items-center space-x-3'>
               <Image
-                src={personal.logo.url}
-                alt={personal.name}
+                src={personal.acf.logo.url}
+                alt={personal.acf.name}
                 width={40}
                 height={40}
                 className='border border-white/20 rounded-full'
               />
               <span className='bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 font-bold text-transparent text-xl'>
-                {personal.name}
+                {personal.acf.name}
               </span>
             </Link>
-            <p className='text-white/60 text-sm'>{personal.title__headline}</p>
+            <p className='text-white/60 text-sm'>
+              {personal.acf.title__headline}
+            </p>
           </div>
 
           {/* Quick Links */}
@@ -137,7 +139,7 @@ export default async function Footer() {
         </div>
 
         <div className='pt-6 border-white/10 border-t text-white/40 text-xs text-center'>
-          © {currentYear} {personal.name}. Crafted with passion and pixels.
+          © {currentYear} {personal.acf.name}. Crafted with passion and pixels.
         </div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ import { getProjectBySlug } from '@/lib/wp-utils';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Code } from 'lucide-react';
+import { generateSEOMetadata, SchemaOrg } from '@/components/seo';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -17,19 +18,13 @@ export async function generateMetadata({
   const project = await getProjectBySlug(slug);
   if (!project) return { title: 'Project Not Found' };
 
-  return {
-    title: `${project.title} - John Doe Projects`,
-    description: project.acf.short_project_description,
-    openGraph: {
-      title: `${project.title} - John Doe Projects`,
-      description: project.acf.short_project_description,
-      images: project.acf.screenshots?.[0]?.full_image_url
-        ? [{ url: project.acf.screenshots[0].full_image_url }]
-        : [],
-      url: `/projects/${slug}`,
-      type: 'article',
-    },
-  };
+  return generateSEOMetadata({
+    yoastData: project.yoastSEO,
+    fallbackTitle: `${project.title} - Projects`,
+    fallbackDescription: project.acf.short_project_description,
+    fallbackImage:
+      project.acf.screenshots?.[0]?.full_image_url || '/images/default-og.jpg',
+  });
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
@@ -39,6 +34,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   return (
     <article className='relative bg-black min-h-screen overflow-hidden text-white'>
+      <SchemaOrg yoastData={project.yoastSEO} />
       <div className='absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20 pointer-events-none'></div>
 
       <div className='z-10 relative mx-auto px-4 py-20 max-w-4xl container'>

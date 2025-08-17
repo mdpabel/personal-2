@@ -35,9 +35,9 @@ export const getCaseStudies = async ({
   limit,
   page,
 }: {
-  limit: number;
+  limit?: number;
   page?: number;
-}) => {
+} = {}) => {
   const { posts, hasMore, total, totalPages } =
     await wordpress.getPosts<CaseStudyAcf>({
       postType: 'case-study',
@@ -78,7 +78,7 @@ export const getPersonalData = async () => {
     status: 'publish',
   });
 
-  return posts[0].acf;
+  return posts[0];
 };
 
 export const getProjects = async ({
@@ -87,7 +87,7 @@ export const getProjects = async ({
 }: {
   limit?: number;
   page?: number;
-}) => {
+} = {}) => {
   const { posts, hasMore, total, totalPages } =
     await wordpress.getPosts<ProjectAcf>({
       postType: 'project',

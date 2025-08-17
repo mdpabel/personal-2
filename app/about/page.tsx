@@ -6,41 +6,23 @@ import {
   getReviews,
 } from '@/lib/wp-utils';
 import { Timeline } from '@/components/ui/timeline';
-import { ArrowUpRight, Code, Palette, Quote } from 'lucide-react';
+import { ArrowUpRight, Code, Palette } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Testimonials from '@/components/testimonials';
 import Image from 'next/image';
+import { generateBasicSEOMetadata } from '@/components/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
   const personal = await getPersonalData();
 
-  return {
-    title: `${personal.name} - About Me`,
-    description: personal.title__headline,
-    openGraph: {
-      title: `${personal.name} - About Me`,
-      description: personal.title__headline,
-      images: [
-        {
-          url: personal.images?.[0]?.full_image_url || '/placeholder-og.jpg',
-          width: 1200,
-          height: 630,
-          alt: personal.name,
-        },
-      ],
-      url: '/about',
-      type: 'profile',
-      gender: 'male', // Assuming based on name; adjust if needed
-      username: personal.name.toLowerCase().replace(/\s+/g, '-'),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${personal.name} - About Me`,
-      description: personal.title__headline,
-      images: [personal.images?.[0]?.full_image_url || '/placeholder-og.jpg'],
-    },
-  };
+  return generateBasicSEOMetadata({
+    title: `${personal.acf.name} - About Me`,
+    description: personal.acf.title__headline,
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/about',
+    type: 'profile',
+  });
 }
 
 export default async function AboutPage() {
@@ -50,7 +32,7 @@ export default async function AboutPage() {
   const reviews = await getReviews();
 
   const mainProfileImage =
-    personal.images?.[0]?.full_image_url ||
+    personal.acf.images?.[0]?.full_image_url ||
     '/placeholder.svg?height=300&width=300';
 
   const sortedExperiences = experiences.sort(
@@ -70,7 +52,7 @@ export default async function AboutPage() {
           <div className='inline-block relative mb-8'>
             <Image
               src={mainProfileImage}
-              alt={personal.name}
+              alt={personal.acf.name}
               width={200}
               height={200}
               className='from-purple-500 to-cyan-500 border-4 border-gradient-to-r rounded-full !h-[200px] object-cover'
@@ -79,10 +61,10 @@ export default async function AboutPage() {
           </div>
 
           <h1 className='bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 mb-4 font-black text-transparent text-5xl'>
-            {personal.name}
+            {personal.acf.name}
           </h1>
           <p className='mx-auto max-w-2xl text-white/70 text-xl'>
-            {personal.title__headline}
+            {personal.acf.title__headline}
           </p>
         </section>
 
@@ -163,9 +145,9 @@ export default async function AboutPage() {
 
         {/* Call to Action */}
         <div className='text-center'>
-          <Link href={personal.button_url}>
+          <Link href={personal.acf.button_url}>
             <Button className='bg-gradient-to-r from-purple-600 hover:from-purple-700 to-pink-600 hover:to-pink-700 px-8 py-4 rounded-3xl font-bold text-white hover:scale-105 transition-all duration-300'>
-              {personal.button_text}
+              {personal.acf.button_text}
               <ArrowUpRight className='ml-2 w-5 h-5' />
             </Button>
           </Link>

@@ -3,35 +3,31 @@ import { notFound } from 'next/navigation';
 import { getCaseStudyBySlug } from '@/lib/wp-utils';
 import Image from 'next/image';
 import { Calendar, Clock, User } from 'lucide-react';
+import { generateSEOMetadata, SchemaOrg } from '@/components/seo';
 
 interface CaseStudyPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: CaseStudyPageProps): Promise<Metadata> {
-  const study = await getCaseStudyBySlug(params.slug);
+  const { slug } = await params;
+
+  const study = await getCaseStudyBySlug(slug);
   if (!study) return { title: 'Case Study Not Found' };
 
-  return {
-    title: `${study.title} - John Doe Case Studies`,
-    description: `Case study for ${study.acf.client_name}`,
-    openGraph: {
-      title: `${study.title} - John Doe Case Studies`,
-      description: `Case study for ${study.acf.client_name}`,
-      images: study.featuredImage?.url
-        ? [{ url: study.featuredImage.url }]
-        : [],
-      url: `/case-studies/${params.slug}`,
-      type: 'article',
-      publishedTime: study.acf.completion_date,
-    },
-  };
+  return generateSEOMetadata({
+    yoastData: study.yoastSEO,
+    fallbackTitle: `${study.title} - Case Studies`,
+    fallbackDescription: `Case study for ${study.acf.client_name}`,
+    fallbackImage: study.featuredImage?.url || '/images/default-og.jpg',
+  });
 }
 
 export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
-  const study = await getCaseStudyBySlug(params.slug);
+  const { slug } = await params;
+  const study = await getCaseStudyBySlug(slug);
   if (!study) notFound();
 
   const formatDate = (dateStr: string) => {
@@ -44,6 +40,7 @@ export default async function CaseStudyPage({ params }: CaseStudyPageProps) {
 
   return (
     <article className='relative min-h-screen overflow-hidden text-white'>
+      <SchemaOrg yoastData={study.yoastSEO} />
       <div className='z-10 relative mx-auto px-4 py-20 max-w-4xl container'>
         <header className='mb-12 text-center'>
           <h1 className='mb-4 font-black text-5xl'>{study.title}</h1>

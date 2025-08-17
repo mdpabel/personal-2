@@ -5,34 +5,32 @@ import Image from 'next/image';
 import { Calendar, Tag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { generateSEOMetadata, SchemaOrg } from '@/components/seo';
 
 interface BlogPostPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: BlogPostPageProps): Promise<Metadata> {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+
+  const post = await getPostBySlug(slug);
   if (!post) return { title: 'Post Not Found' };
 
-  return {
-    title: `${post.title} - John Doe Blog`,
-    description: post.excerpt.replace(/<[^>]+>/g, ''),
-    openGraph: {
-      title: `${post.title} - John Doe Blog`,
-      description: post.excerpt.replace(/<[^>]+>/g, ''),
-      images: post.featuredImage?.url ? [{ url: post.featuredImage.url }] : [],
-      url: `/blog/${params.slug}`,
-      type: 'article',
-      publishedTime: post.date,
-      authors: [post.author.name],
-    },
-  };
+  return generateSEOMetadata({
+    yoastData: post.yoastSEO,
+    fallbackTitle: `${post.title} - Blog`,
+    fallbackDescription: post.excerpt.replace(/<[^>]+>/g, ''),
+    fallbackImage: post.featuredImage?.url || '/images/default-og.jpg',
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
 
   const relatedPosts = await getRelatedPosts(post.id, 3);
@@ -47,6 +45,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <article className='relative min-h-screen overflow-hidden text-white'>
+      <SchemaOrg yoastData={post.yoastSEO} />
       <div className='z-10 relative mx-auto px-4 py-20 max-w-4xl container'>
         <header className='mb-12 text-center'>
           <h1 className='mb-4 font-black text-5xl'>{post.title}</h1>

@@ -1,23 +1,30 @@
+export const dynamic = 'force-static';
+
 import { Metadata } from 'next';
-import { getProjects } from '@/lib/wp-utils';
+import { getPersonalData, getProjects } from '@/lib/wp-utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight } from 'lucide-react';
+import { generateBasicSEOMetadata } from '@/components/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: 'Projects - John Doe',
+  const personal = await getPersonalData();
+
+  return generateBasicSEOMetadata({
+    title: `Projects - ${personal.acf.name}`,
     description:
       'Explore my portfolio of innovative web development and UI/UX design projects.',
-    openGraph: {
-      title: 'Projects - John Doe',
-      description:
-        'Explore my portfolio of innovative web development and UI/UX design projects.',
-      url: '/projects',
-      type: 'website',
-    },
-  };
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/projects',
+    type: 'website',
+  });
+}
+
+export async function generateStaticParams() {
+  const { projects } = await getProjects();
+
+  return projects.map((p) => p.slug);
 }
 
 export default async function ProjectsPage() {

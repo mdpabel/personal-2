@@ -1,21 +1,29 @@
+export const dynamic = 'force-static';
+
 import { Metadata } from 'next';
-import { getBlogPosts } from '@/lib/wp-utils';
+import { getPersonalData, getBlogPosts } from '@/lib/wp-utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, Calendar } from 'lucide-react';
+import { generateBasicSEOMetadata } from '@/components/seo';
+import { wordpress } from '@/lib/wordpress';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: 'Blog - John Doe',
+  const personal = await getPersonalData();
+
+  return generateBasicSEOMetadata({
+    title: `Blog - ${personal.acf.name}`,
     description: 'Insights on design, development, and digital experiences.',
-    openGraph: {
-      title: 'Blog - John Doe',
-      description: 'Insights on design, development, and digital experiences.',
-      url: '/blog',
-      type: 'website',
-    },
-  };
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/blog',
+    type: 'website',
+  });
+}
+
+export async function generateStaticParams() {
+  const { posts } = await wordpress.getPosts();
+  return posts.map((p) => p.slug);
 }
 
 export default async function BlogPage() {

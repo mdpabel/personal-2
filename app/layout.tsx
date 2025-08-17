@@ -6,13 +6,21 @@ import { InteractiveBackground } from '@/components/interactive-background';
 import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 import { getPersonalData } from '@/lib/wp-utils';
+import { generateBasicSEOMetadata } from '@/components/seo';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-  title: 'John Doe Portfolio',
-  description: 'Digital craftsman pushing the boundaries of web experiences',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const personal = await getPersonalData();
+
+  return generateBasicSEOMetadata({
+    title: `${personal.acf.name} Portfolio`,
+    description: personal.acf.title__headline,
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/',
+    type: 'website',
+  });
+}
 
 export default async function RootLayout({
   children,
@@ -26,7 +34,7 @@ export default async function RootLayout({
       <body className={inter.className}>
         <div className='relative bg-black min-h-screen overflow-hidden text-white'>
           <InteractiveBackground />
-          <Navigation logo={personal.logo.url} name={personal.name} />
+          <Navigation logo={personal.acf.logo.url} name={personal.acf.name} />
           <div className='z-10 relative'>{children}</div>
           <Footer />
         </div>

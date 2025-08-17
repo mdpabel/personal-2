@@ -1,23 +1,29 @@
+export const dynamic = 'force-static';
+
 import { Metadata } from 'next';
-import { getCaseStudies } from '@/lib/wp-utils';
+import { getPersonalData, getCaseStudies } from '@/lib/wp-utils';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, Calendar, Clock } from 'lucide-react';
+import { generateBasicSEOMetadata } from '@/components/seo';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: 'Case Studies - John Doe',
+  const personal = await getPersonalData();
+
+  return generateBasicSEOMetadata({
+    title: `Case Studies - ${personal.acf.name}`,
     description:
       'In-depth case studies of my most impactful projects and solutions.',
-    openGraph: {
-      title: 'Case Studies - John Doe',
-      description:
-        'In-depth case studies of my most impactful projects and solutions.',
-      url: '/case-studies',
-      type: 'website',
-    },
-  };
+    image: personal.acf.images?.[0]?.full_image_url || '/images/default-og.jpg',
+    url: '/case-studies',
+    type: 'website',
+  });
+}
+
+export async function generateStaticParams() {
+  const { caseStudies } = await getCaseStudies();
+
+  return caseStudies.map((s) => s.slug);
 }
 
 export default async function CaseStudiesPage() {
