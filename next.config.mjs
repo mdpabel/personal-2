@@ -7,8 +7,13 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'www.3zerodigital.org',
+      },
+    ],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
