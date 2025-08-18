@@ -114,3 +114,12 @@ export interface CaseStudyAcf {
   project_duration: string;
   screenshots: Screenshot[];
 }
+
+export interface ServiceAcf {
+  subtitle: string;
+  short_description: string;
+  detailed_description: string;
+  features: string;
+  orig_price: number;
+  discounted_price: number;
+}

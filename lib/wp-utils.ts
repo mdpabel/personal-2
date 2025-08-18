@@ -5,6 +5,7 @@ import {
   CaseStudyAcf,
   ExperienceAcf,
   PersonalInfoACF,
+  ServiceAcf,
 } from '@/types/wp';
 
 export const getBlogPosts = async ({
@@ -132,4 +133,36 @@ export const getExpertise = async ({ limit }: { limit: number }) => {
     title: p.title,
     shortDescription: p.content,
   }));
+};
+
+export const getServices = async ({
+  limit,
+  page,
+}: {
+  limit?: number;
+  page?: number;
+} = {}) => {
+  const { posts, hasMore, total, totalPages } =
+    await wordpress.getPosts<ServiceAcf>({
+      postType: 'service',
+      status: 'publish',
+      perPage: limit,
+      page,
+    });
+
+  return {
+    services: posts.map((p) => ({
+      title: p.title,
+      slug: p.slug,
+      featuredImage: p.featuredImage,
+      ...p.acf,
+    })),
+    hasMore,
+    total,
+    totalPages,
+  };
+};
+
+export const getServiceBySlug = async (slug: string) => {
+  return await wordpress.getPostBySlug<ServiceAcf>(slug, 'service');
 };

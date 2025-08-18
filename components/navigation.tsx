@@ -12,8 +12,9 @@ export function Navigation({ logo, name }: { logo: string; name: string }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const items = [
-    { label: 'Home', href: '/' },
+    // { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
+    { label: 'Services', href: '/services' },
     { label: 'Projects', href: '/projects' },
     { label: 'Case Studies', href: '/case-studies' },
     { label: 'Blog', href: '/blog' },
