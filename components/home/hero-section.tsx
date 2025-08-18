@@ -172,9 +172,11 @@ export default function HeroSection({
 
           {/* Social Links */}
           <div className='flex justify-between items-center col-span-1 sm:col-span-6 lg:col-span-8 row-span-1 sm:row-span-2 bg-white/5 backdrop-blur-xl p-6 border border-white/10 rounded-3xl'>
-            <div className='font-semibold text-lg'>Connect With Me</div>
-            <div className='flex space-x-4'>
-              {socialList.map((url, i) => {
+            <div className='hidden md:block font-semibold text-lg'>
+              Connect With Me
+            </div>
+            <div className='flex gap-2 md:gap-4'>
+              {socialList.slice(0, 5).map((url, i) => {
                 const platform = getPlatform(url);
                 const social = socialMap[platform as keyof typeof socialMap];
                 if (!social) return null;
