@@ -22,6 +22,7 @@ export async function generateMetadata({
     fallbackTitle: `${study.title} - Case Studies`,
     fallbackDescription: `Case study for ${study.acf.client_name}`,
     fallbackImage: study.featuredImage?.url || '/images/default-og.jpg',
+    canonical: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/case-studies/${slug}`,
   });
 }
 

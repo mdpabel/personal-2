@@ -43,6 +43,7 @@ export async function generateMetadata({
     fallbackTitle: `${service.title} - Services`,
     fallbackDescription: service.acf.short_description,
     fallbackImage: service.featuredImage?.url || '/images/default-og.jpg',
+    canonical: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/services/${slug}`,
   });
 }
 

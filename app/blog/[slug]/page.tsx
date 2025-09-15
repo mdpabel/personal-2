@@ -24,6 +24,7 @@ export async function generateMetadata({
     fallbackTitle: `${post.title} - Blog`,
     fallbackDescription: post.excerpt.replace(/<[^>]+>/g, ''),
     fallbackImage: post.featuredImage?.url || '/images/default-og.jpg',
+    canonical: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/blog/${slug}`,
   });
 }
 

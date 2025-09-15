@@ -24,6 +24,7 @@ export async function generateMetadata({
     fallbackDescription: project.acf.short_project_description,
     fallbackImage:
       project.acf.screenshots?.[0]?.full_image_url || '/images/default-og.jpg',
+    canonical: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/projects/${slug}`,
   });
 }
 
