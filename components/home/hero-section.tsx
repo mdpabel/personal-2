@@ -11,7 +11,7 @@ import {
   Youtube,
   Music,
 } from 'lucide-react';
-import { MusicPlayer } from '@/components/music-player';
+import { HireMeSection } from '@/components/hire-me';
 import { PersonalInfoACF } from '@/types/wp';
 
 interface HeroSectionProps {
@@ -168,7 +168,7 @@ export default function HeroSection({
           </div>
 
           {/* Music Player */}
-          <MusicPlayer />
+          <HireMeSection />
 
           {/* Social Links */}
           <div className='flex justify-between items-center col-span-1 sm:col-span-6 lg:col-span-8 row-span-1 sm:row-span-2 bg-white/5 backdrop-blur-xl p-6 border border-white/10 rounded-3xl'>
