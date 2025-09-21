@@ -7,6 +7,7 @@ import { Navigation } from '@/components/navigation';
 import Footer from '@/components/footer';
 import { getPersonalData } from '@/lib/wp-utils';
 import { generateBasicSEOMetadata } from '@/components/seo';
+import { getMenu } from '@/lib/get-menus';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -28,13 +29,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const personal = await getPersonalData();
+  const menu = await getMenu();
 
   return (
     <html lang='en'>
       <body className={inter.className}>
         <div className='relative bg-black min-h-screen overflow-hidden text-white'>
           <InteractiveBackground />
-          <Navigation logo={personal.acf.logo.url} name={personal.acf.name} />
+          <Navigation
+            items={menu}
+            logo={personal.acf.logo.url}
+            name={personal.acf.name}
+          />
           <div className='z-10 relative'>{children}</div>
           <Footer />
         </div>
